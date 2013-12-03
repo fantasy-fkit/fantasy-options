@@ -15,8 +15,17 @@ OptionM.empty = function() {
 OptionM.prototype.extract = function() {
     return this.x;
 };
-
-// Derived
+OptionM.prototype.fold = function(f, g) {
+    return this.x.fold(f, g);
+};
+OptionM.prototype.chain = function(f) {
+    return this.fold(
+        function(a) {
+            return f(a);
+        },
+        OptionM.empty
+    );
+};
 OptionM.prototype.concat = function(x) {
     return this.x.cata({
         Some: function(a) {
@@ -37,6 +46,18 @@ OptionM.prototype.concat = function(x) {
                 None: constant(OptionM(Option.None))
             });
         }
+    });
+};
+
+// Derived
+OptionM.prototype.ap = function(a) {
+    return this.chain(function(f) {
+        return a.map(f);
+    });
+};
+OptionM.prototype.map = function(f) {
+    return this.chain(function(a) {
+        return OptionM.of(f(a));
     });
 };
 
