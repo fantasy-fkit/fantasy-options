@@ -2,12 +2,14 @@ var λ = require('fantasy-check/src/adapters/nodeunit'),
     applicative = require('fantasy-check/src/laws/applicative'),
     functor = require('fantasy-check/src/laws/functor'),
     monad = require('fantasy-check/src/laws/monad'),
+    monoid = require('fantasy-check/src/laws/monoid'),
 
     helpers = require('fantasy-helpers'),
     combinators = require('fantasy-combinators'),
+    options = require('../fantasy-options'),
 
     Identity = require('fantasy-identities'),
-    Option = require('../fantasy-options'),
+    Option = options.Option,
     
     constant = combinators.constant,
     identity = combinators.identity,
