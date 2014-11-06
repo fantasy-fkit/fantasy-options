@@ -97,7 +97,23 @@ Option.prototype.traverse = function(f, p) {
         }
     );
 };
-
+Option.from = function(a) {
+    return !(typeof a === 'undefined' || a === null) ? Option.of(a) : Option.None;
+};
+Option.prototype.is = function(x) {
+    return this.chain(function(a) {
+        return x.chain(function(b) {
+            return a === b ? Option.of(a) : Option.None;
+        });
+    });
+};
+Option.prototype.isNot = function(x) {
+    return this.chain(function(a) {
+        return x.chain(function(b) {
+            return a !== b ? Option.of(a) : Option.None;
+        });
+    });
+};
 // Export
 if (typeof module != 'undefined')
     module.exports = Option;

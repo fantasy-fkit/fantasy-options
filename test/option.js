@@ -10,22 +10,22 @@ var λ = require('fantasy-check/src/adapters/nodeunit'),
 
     Identity = require('fantasy-identities'),
     Option = options.Option,
-    
+
     constant = combinators.constant,
     identity = combinators.identity,
 
-    equals = function(a) {
-        return function(b) {
+    equals = function (a) {
+        return function (b) {
             return a.fold(
-                function(x) {
+                function (x) {
                     return b.fold(
-                        function(y) {
+                        function (y) {
                             return x === y;
                         },
                         constant(false)
                     );
                 },
-                function() {
+                function () {
                     return b.fold(
                         constant(false),
                         constant(true)
@@ -33,8 +33,8 @@ var λ = require('fantasy-check/src/adapters/nodeunit'),
                 });
         };
     },
-    error = function(a) {
-        return function() {
+    error = function (a) {
+        return function () {
             throw new Error(a);
         };
     },
@@ -66,15 +66,15 @@ function noneOf() {
 
 λ = λ
     .property('identityOf', identityOf)
-    .method('arb', isIdentityOf, function(a, b) {
+    .method('arb', isIdentityOf, function (a, b) {
         return Identity.of(this.arb(a.type, b - 1));
     })
     .property('someOf', someOf)
-    .method('arb', isSomeOf, function(a, b) {
+    .method('arb', isSomeOf, function (a, b) {
         return Option.of(this.arb(a.type, b - 1));
     })
     .property('noneOf', noneOf)
-    .method('arb', isNoneOf, function(a, b) {
+    .method('arb', isNoneOf, function (a, b) {
         return Option.None;
     });
 
@@ -100,14 +100,14 @@ exports.option = {
 
     // Manual tests
     'when testing Some with concat should return correct value': λ.check(
-        function(a, b) {
+        function (a, b) {
             var result = Option.Some(a).concat(Option.Some(b));
             return equals(result)(Option.Some(a.concat(b)));
         },
         [String, String]
     ),
     'when testing None with concat should return correct value': λ.check(
-        function(a) {
+        function (a) {
             var result = Option.None.concat(Option.Some(a));
             return equals(result)(Option.None);
         },
@@ -115,102 +115,141 @@ exports.option = {
     ),
 
     'when testing traverse with Some should return correct value': λ.check(
-        function(a) {
-            return a.traverse(function (x) { return Identity.of(x); }, Identity).x.x === a.x;
+        function (a) {
+            return a.traverse(function (x) {
+                    return Identity.of(x);
+                }, Identity).x.x === a.x;
         },
         [λ.someOf(Number)]
     ),
 
     'when testing traverse with None should return correct value': λ.check(
-        function(a) {
-            return a.traverse(function (x) { return Identity.of(x); }, Identity).x === Option.None;
+        function (a) {
+            return a.traverse(function (x) {
+                    return Identity.of(x);
+                }, Identity).x === Option.None;
         },
         [λ.noneOf()]
     ),
 
     'when testing Some with orElse should return correct value': λ.check(
-        function(a, b) {
+        function (a, b) {
             return equals(Option.Some(a).orElse(b))(Option.Some(a));
         },
         [λ.AnyVal, λ.AnyVal]
     ),
     'when testing None with orElse should return correct value': λ.check(
-        function(a) {
+        function (a) {
             return Option.None.orElse(a) === a;
         },
         [λ.AnyVal]
     ),
 
     'when testing Some with getOrElse should return correct value': λ.check(
-        function(a, b) {
+        function (a, b) {
             return Option.Some(a).getOrElse(b) === a;
         },
         [λ.AnyVal, λ.AnyVal]
     ),
     'when testing None with getOrElse should return correct value': λ.check(
-        function(a) {
+        function (a) {
             return Option.None.getOrElse(a) === a;
         },
         [λ.AnyVal]
     ),
-
-    'when creating None with value should set value on None': function(test) {
+    'when creating None with value should set value on None': function (test) {
         test.ok(equals(Option.None)(Option.None));
         test.done();
     },
-    'when creating None should be valid option': function(test) {
+    'when creating None should be valid option': function (test) {
         test.ok(isOption(Option.None));
         test.done();
     },
-    'when creating None and mapping value should map to correct value': function(test) {
+    'when creating None and mapping value should map to correct value': function (test) {
         test.ok(equals(Option.None.map(error('Failed if called')))(Option.None));
         test.done();
     },
     'when creating None and folding should map to correct value': λ.check(
-        function(a) {
+        function (a) {
             var result = Option.None.fold(
-                    error('Failed if called'),
-                    constant(a)
-                );
+                error('Failed if called'),
+                constant(a)
+            );
             return result === a;
         },
         [λ.AnyVal]
     ),
     'when creating Some should be Some': λ.check(
-        function(a) {
+        function (a) {
             return Option.Some(a).fold(
-                    constant(true),
-                    constant(false)
-                );
+                constant(true),
+                constant(false)
+            );
         },
         [λ.AnyVal]
     ),
     'when creating Some and folding should map to correct value': λ.check(
-        function(a) {
+        function (a) {
             var result = Option.Some(a).fold(
-                    identity,
-                    error('Failed if called')
-                );
+                identity,
+                error('Failed if called')
+            );
             return result === a;
         },
         [λ.AnyVal]
     ),
     'when testing sequence with Some should return correct type': λ.check(
-        function(a) {
+        function (a) {
             return isIdentity(a.sequence());
         },
         [λ.someOf(λ.identityOf(Number))]
     ),
     'when testing sequence with Some should return correct nested type': λ.check(
-        function(a) {
+        function (a) {
             return isSome(a.sequence().x);
         },
         [λ.someOf(λ.identityOf(Number))]
     ),
     'when testing sequence with Some should return correct value': λ.check(
-        function(a) {
+        function (a) {
             return a.sequence().x.x === a.x.x;
         },
         [λ.someOf(λ.identityOf(Number))]
+    ),
+    'when testing from with present value should return correct value' : λ.check(
+        function(a) {
+            return isSome(Option.from(a));
+        },
+        [String]
+    ),
+    'when testing from with not present value should return correct value' : λ.check(
+        function(a) {
+            return Option.from(a.notPresent) === Option.None;
+        },
+        [Object]
+    ),
+    'when testing is with Some should return correct value': λ.check(
+        function(a) {
+            return a.is(a).x === a.x;
+        },
+        [λ.someOf(Number)]
+    ),
+    'when testing is with Some and Some should return correct value': λ.check(
+        function(a, b) {
+            return a.is(b) === Option.None;
+        },
+        [λ.someOf(Number), λ.someOf(Number)]
+    ),
+    'when testing isNot with Some should return correct value': λ.check(
+        function(a) {
+            return a.isNot(a) === Option.None;
+        },
+        [λ.someOf(Number)]
+    ),
+    'when testing isNot with Some and Some should return correct value': λ.check(
+        function(a, b) {
+            return a.isNot(b).x === a.x;
+        },
+        [λ.someOf(Number), λ.someOf(Number)]
     )
 };
