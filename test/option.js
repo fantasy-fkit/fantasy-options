@@ -47,10 +47,6 @@ var λ = require('fantasy-check/src/adapters/nodeunit'),
     isIdentity = helpers.isInstanceOf(Identity),
     isIdentityOf = helpers.isInstanceOf(identityOf);
 
-function run(a) {
-    return a.run.x;
-}
-
 function identityOf(type) {
     var self = this.getInstance(this, identityOf);
     self.type = type;
@@ -180,7 +176,6 @@ exports.option = {
         },
         [λ.AnyVal]
     ),
-
     'when creating Some should be Some': λ.check(
         function(a) {
             return Option.Some(a).fold(
@@ -218,25 +213,4 @@ exports.option = {
         },
         [λ.someOf(λ.identityOf(Number))]
     )
-};
-
-exports.optionT = {
-
-    // Applicative Functor tests
-    'All (Applicative)': applicative.laws(λ)(Option.OptionT(Identity), run),
-    'Identity (Applicative)': applicative.identity(λ)(Option.OptionT(Identity), run),
-    'Composition (Applicative)': applicative.composition(λ)(Option.OptionT(Identity), run),
-    'Homomorphism (Applicative)': applicative.homomorphism(λ)(Option.OptionT(Identity), run),
-    'Interchange (Applicative)': applicative.interchange(λ)(Option.OptionT(Identity), run),
-
-    // Functor tests
-    'All (Functor)': functor.laws(λ)(Option.OptionT(Identity).of, run),
-    'Identity (Functor)': functor.identity(λ)(Option.OptionT(Identity).of, run),
-    'Composition (Functor)': functor.composition(λ)(Option.OptionT(Identity).of, run),
-
-    // Monad tests
-    'All (Monad)': monad.laws(λ)(Option.OptionT(Identity), run),
-    'Left Identity (Monad)': monad.leftIdentity(λ)(Option.OptionT(Identity), run),
-    'Right Identity (Monad)': monad.rightIdentity(λ)(Option.OptionT(Identity), run),
-    'Associativity (Monad)': monad.associativity(λ)(Option.OptionT(Identity), run)
 };
