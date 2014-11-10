@@ -251,5 +251,11 @@ exports.option = {
             return a.isNot(b).x === a.x;
         },
         [λ.someOf(Number), λ.someOf(Number)]
+    ),
+    'when testing isNot with Some and None should return correct value': λ.check(
+        function(a, b) {
+            return a.isNot(b).x === a.x;
+        },
+        [λ.someOf(Number), λ.noneOf()]
     )
 };

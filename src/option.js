@@ -21,8 +21,8 @@ var daggy = require('daggy'),
     constant = combinators.constant,
     identity = combinators.identity,
 
-    error = function(str) {
-        return function() {
+    error = function (str) {
+        return function () {
             throw new Error(str);
         };
     },
@@ -33,85 +33,88 @@ var daggy = require('daggy'),
     });
 
 // Methods
-Option.prototype.fold = function(f, g) {
+Option.prototype.fold = function (f, g) {
     return this.cata({
         Some: f,
         None: g
     });
 };
 Option.of = Option.Some;
-Option.prototype.orElse = function(x) {
+Option.prototype.orElse = function (x) {
     return this.fold(
         Option.Some,
         constant(x)
     );
 };
-Option.prototype.getOrElse = function(x) {
+Option.prototype.getOrElse = function (x) {
     return this.fold(
         identity,
-        function() {
+        function () {
             return x;
         }
     );
 };
-Option.prototype.chain = function(f) {
+Option.prototype.chain = function (f) {
     return this.fold(
-        function(a) {
+        function (a) {
             return f(a);
         },
-        function() {
+        function () {
             return Option.None;
         }
     );
 };
-Option.prototype.concat = function(x) {
-    return this.chain(function(a) {
-        return x.map(function(b) {
+Option.prototype.concat = function (x) {
+    return this.chain(function (a) {
+        return x.map(function (b) {
             return a.concat(b);
         });
     });
 };
 
 // Derived
-Option.prototype.map = function(f) {
-    return this.chain(function(a) {
+Option.prototype.map = function (f) {
+    return this.chain(function (a) {
         return Option.of(f(a));
     });
 };
-Option.prototype.ap = function(a) {
-    return this.chain(function(f) {
+Option.prototype.ap = function (a) {
+    return this.chain(function (f) {
         return a.map(f);
     });
 };
 
-Option.prototype.sequence = function(p) {
+Option.prototype.sequence = function (p) {
     return this.traverse(identity, p);
 };
-Option.prototype.traverse = function(f, p) {
+Option.prototype.traverse = function (f, g) {
     return this.fold(
-        function(x) {
+        function (x) {
             return f(x).map(Option.of);
         },
-        function() {
-          return p.of(Option.None);
+        function () {
+            return g.of(Option.None);
         }
     );
 };
-Option.from = function(a) {
+Option.from = function (a) {
     return !(typeof a === 'undefined' || a === null) ? Option.of(a) : Option.None;
 };
-Option.prototype.is = function(x) {
-    return this.chain(function(a) {
-        return x.chain(function(b) {
+Option.prototype.is = function (x) {
+    return this.chain(function (a) {
+        return x.chain(function (b) {
             return a === b ? Option.of(a) : Option.None;
         });
     });
 };
-Option.prototype.isNot = function(x) {
-    return this.chain(function(a) {
-        return x.chain(function(b) {
-            return a !== b ? Option.of(a) : Option.None;
-        });
+Option.prototype.isNot = function (x) {
+    return this.chain(function (a) {
+        return x.fold(
+            function (b) {
+                return a !== b ? Option.of(a) : Option.None;
+            },
+            constant(Option.of(a))
+        );
     });
 };
 // Export
