@@ -18,7 +18,7 @@
     "daggy": "0.0.1",
     "fantasy-combinators": "0.0.1",
     "map-object": "git://github.com/KlimMalgin/map-object.git",
-    "fantasy-fkit-conditions": "git://github.com/fantasy-fkit/conditions.git",
+    "fantasy-fkit-conditions": "git://github.com/fantasy-fkit/conditions.git"
   },
   "devDependencies": {
     "grunt-cli": "0.1.9",
