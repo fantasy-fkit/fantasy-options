@@ -3,21 +3,22 @@
   "description": "Option data structure.",
   "repository": {
     "type": "git",
-    "url": "git://github.com/fantasyland/fantasy-options.git"
+    "url": "git://github.com/fantasy-fkit/fantasy-options.git"
   },
   "keywords": [
     "fantasyland",
+    "fantasyfkit",
+    "fkit",
     "option",
     "monad"
   ],
   "author": "Brian McKenna",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/fantasyland/fantasy-options/issues"
-  },
   "dependencies": {
     "daggy": "0.0.1",
-    "fantasy-combinators": "0.0.1"
+    "fantasy-combinators": "0.0.1",
+    "map-object": "git://github.com/KlimMalgin/map-object.git",
+    "fantasy-fkit-conditions": "git://github.com/fantasy-fkit/conditions.git",
   },
   "devDependencies": {
     "grunt-cli": "0.1.9",
