@@ -16,10 +16,19 @@
 //   * `map(f)` - Functor map
 //
 var daggy = require('daggy'),
-    combinators = require('fantasy-combinators'),
+    mapObject = require('map-object'),
+    conditions = require('fantasy-fkit-conditions'),
 
+    combinators = require('fantasy-combinators'),
     constant = combinators.constant,
     identity = combinators.identity,
+    
+    mixin = function (target, source) {
+        mapObject(source, function(_, k) {
+            if (!target.prototype.hasOwnProperty(k)) target.prototype[k] = source[k];
+            else console.warn("Field %o already exist in prototype!", k);
+        });
+    },
 
     error = function(str) {
         return function() {
@@ -114,6 +123,10 @@ Option.prototype.isNot = function(x) {
         });
     });
 };
+
+// Mixin conditions into Option prototype
+mixin(Option, conditions);
+
 // Export
 if (typeof module != 'undefined')
     module.exports = Option;
