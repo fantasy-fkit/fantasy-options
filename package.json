@@ -16,7 +16,8 @@
   "license": "MIT",
   "dependencies": {
     "daggy": "0.0.1",
-    "fantasy-combinators": "0.0.1"
+    "fantasy-combinators": "0.0.1",
+    "conditions": "git://github.com/fantasy-fkit/conditions.git"
   },
   "devDependencies": {
     "grunt-cli": "0.1.9",
