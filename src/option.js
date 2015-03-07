@@ -16,19 +16,19 @@
 //   * `map(f)` - Functor map
 //
 var daggy = require('daggy'),
-//    mapObject = require('map-object'),
-//    conditions = require('fantasy-fkit-conditions'),
+    mapObject = require('map-object'),
+    conditions = require('conditions'),
 
     combinators = require('fantasy-combinators'),
     constant = combinators.constant,
     identity = combinators.identity,
     
-    /*mixin = function (target, source) {
+    mixin = function (target, source) {
         mapObject(source, function(_, k) {
             if (!target.prototype.hasOwnProperty(k)) target.prototype[k] = source[k];
             else console.warn("Field %o already exist in prototype!", k);
         });
-    },*/
+    },
 
     error = function (str) {
         return function () {
@@ -49,6 +49,13 @@ Option.prototype.fold = function (f, g) {
     });
 };
 Option.of = Option.Some;
+Option.prototype.operation = function (operation) {
+    return (function (valueO) {
+        return this.chain(function (meV) {
+            return valueO.map(operation(meV));
+        });
+    }).bind(this);
+};
 Option.prototype.orElse = function (x) {
     return this.fold(
         Option.Some,
@@ -128,7 +135,7 @@ Option.prototype.isNot = function (x) {
 };
 
 // Mixin conditions into Option prototype
-//mixin(Option, conditions);
+mixin(Option, conditions);
 
 // Export
 if (typeof module != 'undefined')
