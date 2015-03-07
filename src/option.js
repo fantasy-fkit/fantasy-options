@@ -91,7 +91,7 @@ Option.prototype.concat = function (x) {
 // Derived
 Option.prototype.map = function (f) {
     return this.chain(function (a) {
-        return Option.of(f(a));
+        return Option.from(f(a));
     });
 };
 Option.prototype.ap = function (a) {
