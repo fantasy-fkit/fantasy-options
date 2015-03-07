@@ -17,6 +17,7 @@
   "dependencies": {
     "daggy": "0.0.1",
     "fantasy-combinators": "0.0.1",
+    "map-object": "git://github.com/KlimMalgin/map-object.git",
     "conditions": "git://github.com/fantasy-fkit/conditions.git"
   },
   "devDependencies": {
@@ -33,5 +34,5 @@
   },
   "files": ["fantasy-options.js", "src/*.js"],
   "main": "fantasy-options.js",
-  "version": "0.1.3"
+  "version": "0.1.4"
 }
