@@ -18,6 +18,7 @@
 var daggy = require('daggy'),
     mapObject = require('map-object'),
     conditions = require('conditions'),
+    math = require('math'),
 
     combinators = require('fantasy-combinators'),
     constant = combinators.constant,
@@ -134,8 +135,9 @@ Option.prototype.isNot = function (x) {
     });
 };
 
-// Mixin conditions into Option prototype
+// Mixin extended functionality into Option prototype
 mixin(Option, conditions);
+mixin(Option, math);
 
 // Export
 if (typeof module != 'undefined')
