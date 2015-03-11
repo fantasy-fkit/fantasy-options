@@ -90,6 +90,16 @@ Option.prototype.concat = function (x) {
 };
 
 // Derived
+Option.prototype.chainOf = function (f) {
+    return this.fold(
+        function (a) {
+            return f(Option.of(a));
+        },
+        function () {
+            return Option.None;
+        }
+    );
+};
 Option.prototype.map = function (f) {
     return this.chain(function (a) {
         return Option.from(f(a));
